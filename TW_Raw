@@ -1,0 +1,39 @@
+library(dplyr)
+library(tidyr)
+library(readxl)
+library(xlsx)
+
+# Set working directory
+setwd("C:/Users/jaehyun.park/Desktop/R")
+
+twraw18 <- read_excel(path = "Monthly Report_2018  Jun-0814.xlsx", sheet = "2018 Detail - By Month ")
+twraw17 <- read_excel(path = "Monthly Report_2018  Jun-0814.xlsx", sheet = "2017 Detail - By Month ")
+
+twraw18$Year <- 2018
+twraw17$Year <- 2017
+
+twraw18 <- subset(twraw18, select = -c(TOTAL))
+twraw17 <- subset(twraw17, select = -c(TOTAL))
+
+twraw18 <- twraw18[complete.cases(twraw18[ ,1:6]),]
+twraw17 <- twraw17[complete.cases(twraw17[ ,1:6]),]
+
+twraw18[, 7:18] <- twraw18[ ,7:18] %>% sapply(as.numeric)
+twraw17[, 7:18] <- twraw17[ ,7:18] %>% sapply(as.numeric)
+
+twraw18[is.na(twraw18)] <- 0
+twraw17[is.na(twraw17)] <- 0
+
+colnames(twraw18)[7:18] <- match(colnames(twraw18)[7:18], month.abb)
+colnames(twraw17)[7:18] <- match(colnames(twraw17)[7:18], month.abb)
+
+# Bind dataset from 17' and 18' tabs
+twraw <- rbind(twraw17, twraw18)
+
+twraw <- twraw %>%
+  gather(Month, Investment, "1":"12")
+
+twraw <- subset(twraw, select = -c(PRODUCT))
+twraw <- twraw %>% arrange(SECTOR, CATEGORY, BENEFIT, ADVERTISOR, BRAND)
+
+write.xlsx (as.data.frame(twraw), file = "TW JUN DATA.xlsx", row.names = FALSE)
