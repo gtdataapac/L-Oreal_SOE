@@ -1,3 +1,3 @@
 # L-Oreal_SOE
 
-Formatting Raw Data 
+R scripts for formatting raw data when it first comes in 
