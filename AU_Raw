@@ -1,0 +1,17 @@
+library(dplyr)
+library(tidyr)
+library(readxl)
+library(xlsx)
+
+# Set working directory
+setwd("C:/Users/jaehyun.park/Desktop/R")
+
+auraw <- read_excel(path = "L'Oreal Track & Share June 2018 data AUS.xlsx")
+
+auraw <- auraw[auraw$Year == 2017 | auraw$Year == 2018, ]
+
+auraw <- auraw[ ,c(9, 11, 14, 17, 19, 23, 24, 29)]
+
+auraw <- auraw %>% arrange(`Advertiser Group / Advertiser`, Brand, Final_Category, Final_Sub_Cat, `LO Fiche Type`, Year, Month, Spend)
+
+write.xlsx (as.data.frame(auraw), file = "AU JUN DATA.xlsx", row.names = FALSE)
